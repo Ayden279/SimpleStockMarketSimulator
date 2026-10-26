@@ -1,1 +1,230 @@
+#include <iostream>
+#include <ctime>
+#include <fstream>
+#include <string>
+#include <conio.h>
+#include <cctype>
+#include <cmath>
+#include <cstdlib>
+using namespace std;
+
+string fillspaces(string text, int finalLength);
+void pageHome(char& option);
+void pageNewSimulations(char& option, int& numberOfSims);
+void pageExistingSimulations(char& option, int& currentSimulation);
+void pageSimulation(char& option, int currentSimulation, int& currentProfile);
+void pageStockPrices(char& option, int currentSimulation);
+void pageNewProfile(char& option, int currentSimulation, int& numberOfProfiles);
+void pageSettings(char& option, int currentSimulation);
+void pageProfile(char& option, int currentSimulation, int currentProfile);
+
+const int maxThings = 9;
+
+// if imbalance, offset to left
+char option; //in lowercase, always set to 0 at start of funtion
+int nextPage = 1;
+//home
+
+//simulations
+    int simulationNumber[maxThings];
+    string simulationName[maxThings];
+    int numberOfSims;
+    int currentSimulation;
+
+//profiles
+    int profileNumber[maxThings];
+    string profileName[maxThings];
+    int numberOfProfiles;
+    int currentProfile;
+
+
+int main() {
+    bool noQuit = true;
+    
+    for (int i = 0; i < maxThings; i++) {
+        simulationNumber[i] = i;
+        simulationName[i] = " ";
+        profileNumber[i] = i;
+        profileName[i] = " ";
+    }
+    numberOfSims = 0;
+    numberOfProfiles = 0;
+
+
+    while(noQuit){
+        switch (nextPage) {
+            case 1: pageHome(option); break;
+            case 2: if (option == 'n') {pageNewSimulations(option, numberOfSims); break;}
+                    else if (option == 's' || option == 'x') {pageExistingSimulations(option, currentSimulation); break;}
+            case 3: pageSimulation(option, currentSimulation, currentProfile); break;
+            case 4: switch (option) {                
+                        case 'v': pageStockPrices(option, currentSimulation); break;
+                        case 'n': pageNewProfile(option, currentSimulation, numberOfProfiles); break;
+                        case 's': pageSettings(option, currentSimulation); break;
+                    }
+            case 5: pageProfile(option, currentSimulation, currentProfile); break;
+             
+        }
+
+    }
+
+    cin.ignore(10000,'\n');
+    cin.get();
+    return 0;
+}    
+
+string fillSpaces(string text, int finalLength) { //assume length of text is less than final length
+    string newString;
+    newString = text;
+    for (int i = text.length(); i < finalLength; i++) {
+        newString = newString + ' ';
+    }
+    return newString;
+}
+
+void pageHome(char& option) { //base
+    system("cls");
+    option = '0';
+    cout << "########################################################################\n";
+    cout << "#                                                                      #\n";
+    cout << "#                     +==========================+                     #\n";
+    cout << "#                     || Stock Market Simulator ||                     #\n";
+    cout << "#                     +==========================+                     #\n";
+    cout << "#                                                                      #\n";
+    cout << "#                                                                      #\n";
+    cout << "#                                                                      #\n";
+    cout << "#                                                                      #\n";
+    cout << "#       +---+------------------+        +---+------------------+       #\n";
+    cout << "#       | S | Simulations      |        | N | New Simulation   |       #\n";
+    cout << "#       +---+------------------+        +---+------------------+       #\n";
+    cout << "#                                                                      #\n";
+    cout << "#                                                                      #\n";
+    cout << "#                                                                      #\n";
+    cout << "#                                                                      #\n";
+    cout << "#                                                                      #\n";
+    cout << "#                                                                      #\n";
+    cout << "#                                                                      #\n";
+    cout << "#                                                                      #\n";
+    cout << "#                                                                      #\n";
+    cout << "#                                                                      #\n";
+    cout << "########################################################################\n";
+    while (true) {
+        if (_kbhit()) {
+            char key = tolower(_getch());
+            if (key == 's' || key == 'n') {
+                option = key;
+                nextPage = 2;
+                return;
+            }
+            break;
+        }
+    }
+}
+
+void pageNewSimulations(char& option, int& numberOfSims) {//auto returns
+    string simName;
+    system("cls");
+    option = '0';
+    cout << "########################################################################\n";
+    cout << "#                                                                      #\n";
+    cout << "#                         +==================+                         #\n";
+    cout << "#                         || New Simulation ||                         #\n";
+    cout << "#                         +==================+                         #\n";
+    cout << "#                                                                      #\n";
+    cout << "########################################################################\n";
+    cout << "Enter the name of your new simulation\nMax 50 characters\nEnter \"x\" to exit\n";
+    getline(cin, simName);
+    if (simName == "x" || simName == "X") {nextPage = 1; return;}
+    else {
+        numberOfSims++;
+        simulationName[numberOfSims] = simName;
+        nextPage = 1;
+        return;
+    }
+
+}
+
+void pageExistingSimulations(char& option, int& currentSimulation) {
+    system("cls");
+    option = '0';
+    currentSimulation = 0;
+    cout << "########################################################################\n";
+    cout << "#                                                                      #\n";
+    cout << "#                          +===============+                           #\n";
+    cout << "#                          || Simulations ||                           #\n";
+    cout << "#                          +===============+                           #\n";
+    cout << "#                                                                      #\n";
+    for (int i = 0; i < maxThings; i++) {
+        if (simulationName[i] == " ") {cout << "#                                                                      #\n";}
+        else {cout << "#       " << i + 1 << "." << fillSpaces(simulationName[i],63) << "#\n";}
+    }
+    for (int i = 0; i < (16 - maxThings - 4); i++) {cout << "#                                                                      #\n";}
+    cout << "#       +---+------------------+                                       #\n";
+    cout << "#       | X | Back             |                                       #\n";
+    cout << "#       +---+------------------+                                       #\n";
+    cout << "#                                                                      #\n";
+    cout << "########################################################################\n";
+    while (true) {
+        if (_kbhit()) {
+            char key = tolower(_getch());
+            if (key == 'x') {
+                option = key;
+                nextPage = 1;
+                return;
+            }
+            else if (key >= '0' && key <= '9' && key - '0' <= maxThings && key - '0'  > 0) {
+                currentSimulation = key - '0';
+                nextPage = 3;
+                return;
+            }
+            break;
+        }
+    }
+}
+
+void pageSimulation(char& option, int simulation, int& currentProfile) {
+    system("cls");
+    option = '0';
+    currentProfile = 0;
+    string simName = fillspaces(simulationName[simulation], 44);
+    cout << "########################################################################\n";
+    cout << "#    ||  Simulation: " << simName << "||    #\n";
+    cout << "########################################################################\n";
+    cout << "#                                                                      #\n";
+    cout << "#       +---+------------------+        +---+------------------+       #\n";
+    cout << "#       | V | View Stock Price |        | N | New Profile      |       #\n";
+    cout << "#       +---+------------------+        +---+------------------+       #\n";
+    cout << "#                                                                      #\n";
+    for (int i = 0; i < maxThings; i++) {
+        if (profileName[i] == " ") {cout << "#                                                                      #\n";}
+        else {cout << "#       " << i + 1 << "." << fillSpaces(profileName[i],63) << "#\n";}
+    }
+    cout << "#                                                                      #\n";
+    cout << "#       +---+------------------+        +---+------------------+       #\n";
+    cout << "#       | X | Back             |        | S | Settings         |       #\n";
+    cout << "#       +---+------------------+        +---+------------------+       #\n";
+    cout << "#                                                                      #\n";
+    cout << "########################################################################\n";
+    while (true) {
+        if (_kbhit()) {
+            char key = tolower(_getch());
+            switch (key) {
+                case 'x': option = key; nextPage = 2; return;
+                case 'v':
+                case 'n':
+                case 's': option = key; nextPage = 4; return;
+            }
+            if (key >= '0' && key <= '9' && key - '0' <= maxThings && key - '0'  > 0) {
+                currentProfile = key - '0';
+                nextPage = 5;
+                return;
+            }
+            break;
+        }
+    }
+}
+
+/*  cout << "#    +============================================================+    #\n";
+    cout << "#    ||  Simulation: " << simName << "||    #\n";
+    cout << "#    +============================================================+    #\n"; */
 
