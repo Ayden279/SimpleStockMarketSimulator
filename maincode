@@ -8,7 +8,7 @@
 #include <cstdlib>
 using namespace std;
 
-string fillspaces(string text, int finalLength);
+string fillSpaces(string text, int finalLength);
 void pageHome(char& option);
 void pageNewSimulations(char& option, int& numberOfSims);
 void pageExistingSimulations(char& option, int& currentSimulation);
@@ -49,6 +49,7 @@ int main() {
     }
     numberOfSims = 0;
     numberOfProfiles = 0;
+    currentSimulation = 0;
 
 
     while(noQuit){
@@ -137,7 +138,7 @@ void pageNewSimulations(char& option, int& numberOfSims) {//auto returns
     if (simName == "x" || simName == "X") {nextPage = 1; return;}
     else {
         numberOfSims++;
-        simulationName[numberOfSims] = simName;
+        simulationName[numberOfSims - 1] = simName;
         nextPage = 1;
         return;
     }
@@ -156,7 +157,7 @@ void pageExistingSimulations(char& option, int& currentSimulation) {
     cout << "#                                                                      #\n";
     for (int i = 0; i < maxThings; i++) {
         if (simulationName[i] == " ") {cout << "#                                                                      #\n";}
-        else {cout << "#       " << i + 1 << "." << fillSpaces(simulationName[i],63) << "#\n";}
+        else {cout << "#       " << i + 1 << "." << fillSpaces(simulationName[i], 63) << "#\n";}
     }
     for (int i = 0; i < (16 - maxThings - 4); i++) {cout << "#                                                                      #\n";}
     cout << "#       +---+------------------+                                       #\n";
@@ -182,11 +183,11 @@ void pageExistingSimulations(char& option, int& currentSimulation) {
     }
 }
 
-void pageSimulation(char& option, int simulation, int& currentProfile) {
+void pageSimulation(char& option, int currentSimulation, int& currentProfile) {
     system("cls");
     option = '0';
     currentProfile = 0;
-    string simName = fillspaces(simulationName[simulation], 44);
+    string simName = fillSpaces(simulationName[currentSimulation - 1], 44);
     cout << "########################################################################\n";
     cout << "#    ||  Simulation: " << simName << "||    #\n";
     cout << "########################################################################\n";
@@ -197,7 +198,7 @@ void pageSimulation(char& option, int simulation, int& currentProfile) {
     cout << "#                                                                      #\n";
     for (int i = 0; i < maxThings; i++) {
         if (profileName[i] == " ") {cout << "#                                                                      #\n";}
-        else {cout << "#       " << i + 1 << "." << fillSpaces(profileName[i],63) << "#\n";}
+        else {cout << "#       " << i + 1 << "." << fillSpaces(profileName[i], 63) << "#\n";}
     }
     cout << "#                                                                      #\n";
     cout << "#       +---+------------------+        +---+------------------+       #\n";
@@ -224,7 +225,21 @@ void pageSimulation(char& option, int simulation, int& currentProfile) {
     }
 }
 
+void pageStockPrices(char& option, int currentSimulation) {
+    return; //not done
+}
+
+void pageNewProfile(char& option, int currentSimulation, int& numberOfProfiles) {
+    return; //not done
+}
+
+void pageSettings(char& option, int currentSimulation) {
+    return; //not done
+}
+
+void pageProfile(char& option, int currentSimulation, int currentProfile) {
+    return; //not done
+}
 /*  cout << "#    +============================================================+    #\n";
     cout << "#    ||  Simulation: " << simName << "||    #\n";
     cout << "#    +============================================================+    #\n"; */
-
